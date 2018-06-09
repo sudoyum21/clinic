@@ -11,6 +11,11 @@ export class FormComponent implements OnInit {
   constructor(private httpService : HttpService) { }
 
   ngOnInit() {
+    this.getForm();
   }
-
+  getForm(){
+    this.httpService.getFoods().subscribe(data=>{
+      console.log(data)
+    })
+  }
 }

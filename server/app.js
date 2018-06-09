@@ -9,13 +9,15 @@ var sql = require('./config/db-config');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var moment = require('moment');
+var cors = require('cors');
 var allJobs = {}
 var app = express();
+const http = require('http');
 const intervalDts = 5;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
+app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +29,21 @@ app.use('/index', indexRouter);
 app.use('/users', usersRouter);
 // Send all other requests to the Angular app
 app.get('*', (req, res) => {
+  
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
@@ -38,6 +55,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
@@ -45,6 +63,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+app.listen(8080, ()=>{
+  console.log('cors')
+})
 getAllJobs().then(jobs=>{
   jobs.recordset.forEach(j=>{
     xCalendar(j.job, j.minDts, j.maxDts);

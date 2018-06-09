@@ -13,6 +13,6 @@ export class HttpService {
  
     // Uses http.get() to load data from a single API endpoint
     getFoods() {
-        return this.http.get('/api/food');
+        return this.http.get('/users');
     }
 }
